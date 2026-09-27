@@ -1,0 +1,9 @@
+# Storm Contraption — public play build
+
+Play the current nine-gate game: **https://jsalix-agent.github.io/storm-contraption-play/**
+
+Aim left/up/right with the left lever; pull the right lever down fast to flap in the direction you face, then release. One hit ends the flight. The standalone game has no account, no external runtime services, and **no flight logging**. It runs as static HTML, CSS, JS, and local WebP images; nothing needs to be installed. A local server such as `python3 -m http.server 8765` is enough for development.
+
+The public site is a curated browser-only snapshot of the nine-gate game. It intentionally excludes server-side run collection, original source photographs, build scripts, and unreleased experimental routes. Gameplay changes are made in the original maintained game and selectively copied here after review; don't treat this site as the source of truth for in-progress features.
+
+Photo credits and licenses: [credits.html](credits.html). The original code and processed game art are not offered under a blanket open-source license merely because this playable build is public.

@@ -1,0 +1,4 @@
+/* The game overlay ignores flight touches, but its credits link is real. */
+.message .privacy-note a{pointer-events:auto;position:relative;z-index:2;color:#30565b;text-decoration:underline;text-underline-offset:2px;font-weight:700}
+.message .privacy-note a:focus-visible{outline:2px solid #30565b;outline-offset:2px}
+@media(max-width:350px){.log-status{font-size:8px;white-space:nowrap;max-width:43%}.stage-tag{max-width:53%;font-size:8px;white-space:nowrap}}
