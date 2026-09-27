@@ -4,34 +4,32 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1">
   <meta name="theme-color" content="#111b29">
-  <title>Storm Contraption · A two-thumb flying prototype</title>
+  <title>Storm Contraption · alpha.1 prototype</title>
   <link rel="icon" type="image/svg+xml" href="./favicon.svg?v=collage-full-v1">
   <link rel="stylesheet" href="./style.css?v=collage-ui-v1">
-  <link rel="stylesheet" href="./pages.css?v=public-v1">
+  <link rel="stylesheet" href="./pages.css?v=alpha1-v2">
 </head>
 <body>
   <main class="machine" aria-label="Storm Contraption game">
     <div class="topbar">
-      <div class="brand"><span class="bolt">✳</span> STORM<br><strong>CONTRAPTION</strong></div>
+      <button id="logo-button" class="brand" type="button" aria-label="About Storm Contraption"><span class="bolt">✳</span> STORM<br><strong>CONTRAPTION</strong></button>
       <div class="flight-data"><span id="height">000</span><small>METRES UP</small></div>
-      <button id="reset" class="restart" type="button" aria-label="Restart run">↻</button>
+      <button id="pause-button" class="restart" type="button" aria-label="Pause game">Ⅱ</button>
     </div>
     <section class="scene" aria-label="Flying area">
       <canvas id="world" aria-hidden="true"></canvas>
       <div class="stage-tag" id="stage">THE UMBRELLA YARD <span> / 01</span></div>
-      <div class="log-status" id="log-status" role="status" aria-live="polite">PUBLIC · NO LOG</div>
       <div class="message" id="message" aria-live="polite">
         <div class="message-inner"><span class="eyebrow">FLIGHT TEST NO. 001</span><h1>BUILT TO<br>GO <em>UP.</em></h1>
           <p>Aim with your left thumb.<br>Pull the right lever <b>down fast</b> to flap.<br>Release it to reload.</p>
           <span class="begin">PULL DOWN TO LAUNCH ↓</span>
-          <small class="privacy-note">This public build does not record or upload flights.<br><a href="./credits.html" target="_blank" rel="noopener noreferrer">Photo credits and licenses ↗</a></small>
         </div>
       </div>
-      <div class="death" id="death" role="dialog" aria-labelledby="death-title" aria-describedby="death-details" hidden><div class="death-card"><span class="eyebrow">END OF FLIGHT</span><h2 id="death-title">SCRAPPED.</h2><p id="death-details">Highest climb: 0 m</p><button id="retry" type="button">TRY AGAIN <span>↗</span></button></div></div>
+      <div class="death" id="death" role="dialog" aria-labelledby="death-title" aria-describedby="death-details" hidden><div class="death-card"><span class="eyebrow">END OF FLIGHT</span><h2 id="death-title">SCRAPPED.</h2><p id="death-details">Highest climb: 0 m</p><p id="death-best">BEST 0 m</p><button id="retry" type="button">TRY AGAIN <span>↗</span></button></div></div>
     </section>
     <div class="controls" aria-label="Flight controls">
       <div class="aim-zone">
-        <div class="control-label"><span>01</span> AIM <small>← · ↑ · →</small></div>
+        <div class="control-label">AIM</div>
         <div id="aim-track" class="aim-track" role="slider" tabindex="0" aria-label="Aim direction" aria-valuemin="0" aria-valuemax="180" aria-valuenow="90" aria-valuetext="Up">
           <div class="ticks"><i></i><i></i><i></i><i></i><i></i></div>
           <div id="aim-knob" class="aim-knob"><span>✳</span></div>
@@ -39,7 +37,7 @@
         <div class="ends"><span>LEFT</span><span>UP</span><span>RIGHT</span></div>
       </div>
       <div class="flap-zone">
-        <div class="control-label"><span>02</span> FLAP</div>
+        <div class="control-label">FLAP</div>
         <div id="flap-track" class="flap-track" role="slider" tabindex="0" aria-label="Wing position, drag down quickly to flap" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
           <div class="flap-line"></div><div id="flap-knob" class="flap-knob"><span>↕</span></div>
           <span class="flap-top">RESET</span><span class="flap-bottom">POWER</span>
@@ -47,6 +45,17 @@
       </div>
     </div>
   </main>
-  <script type="module" src="./src/main.mjs?v=public-v1"></script>
+  <dialog id="pause-dialog" class="paper-dialog" aria-labelledby="pause-title" aria-describedby="pause-description">
+    <span class="eyebrow">FLIGHT TEST NO. 001</span><h2 id="pause-title">PAUSED.</h2>
+    <p id="pause-description">The storm is holding still.</p><p id="pause-best">BEST 0 m</p>
+    <div class="dialog-actions"><button id="resume" type="button">RESUME ↗</button><button id="restart-run" type="button">RESTART ↻</button></div>
+  </dialog>
+  <dialog id="about-dialog" class="paper-dialog" aria-labelledby="about-title" aria-describedby="about-description">
+    <span class="eyebrow">FLIGHT NOTES</span><h2 id="about-title">STORM CONTRAPTION</h2>
+    <p id="about-description">alpha.1 · prototype</p><p>Made by Josiah</p>
+    <p><a href="./credits.html" target="_blank" rel="noopener noreferrer">Photo credits and licenses ↗</a></p>
+    <div class="dialog-actions"><button id="close-about" type="button">CLOSE ×</button></div>
+  </dialog>
+  <script type="module" src="./src/main.mjs?v=alpha1-v2"></script>
 </body>
 </html>

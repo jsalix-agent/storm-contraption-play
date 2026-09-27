@@ -40,9 +40,31 @@ Promise.all(Object.values(art).map(image => image.decode()))
 const aimTrack = $('aim-track'), aimKnob = $('aim-knob');
 const flapTrack = $('flap-track'), flapKnob = $('flap-knob');
 const message = $('message'), death = $('death');
+const pauseDialog = $('pause-dialog'), aboutDialog = $('about-dialog');
+const BEST_KEY = 'storm-contraption-alpha1-best-v1';
+const boundedAltitude = value => Math.min(FINISH_Y - 130, Math.max(0, Math.floor(value)));
+let best = 0;
+try {
+  const stored = localStorage.getItem(BEST_KEY);
+  if (stored !== null && /^(0|[1-9]\d{0,5})$/.test(stored) && Number(stored) <= FINISH_Y - 130) best = Number(stored);
+} catch { /* Storage can be unavailable. */ }
+function saveBest() { try { localStorage.setItem(BEST_KEY, String(best)); } catch { /* Keep playing. */ } }
+function currentAltitude() { return boundedAltitude(game.maxY - 130); }
+function updateBest() {
+  const altitude = currentAltitude();
+  if (altitude > best) best = altitude;
+  $('pause-best').textContent = `BEST ${best} m`;
+  $('death-best').textContent = `BEST ${best} m`;
+}
 let game = createGame(), aim = .5, wing = 0, armed = true, downTravel = 0, upTravel = 0;
 let aimHeld = false, wingHeld = false;
 let height = 550, camera = 0, flash = 0, flashColor = '255,209,138', shake = 0, last = 0, stageIndex = -1;
+let visualTime = 0, suspended = false, pageInactive = false, aboutWasSuspended = false, focusBeforePause = null;
+let focusRecoveryUntil = 0, focusRecoveryTarget = null;
+function focusAfterTouch(target) {
+  focusRecoveryTarget = target; focusRecoveryUntil = performance.now() + 1200;
+  target.focus({ preventScroll: true });
+}
 let pocketIndex = -1, cleared = new Set(), impactHold = 0;
 const clearanceGates = GATES.map((g, i) => [`gate-${i}`, g.y, g.center, g.width]);
 const particles = [];
@@ -67,19 +89,16 @@ function clearance(key, y, center, width, previousY) {
     margin < 16 ? 1 : key === 'machine' ? .8 : .45, game.x, y);
 }
 
-$('log-status').textContent = 'PUBLIC · NO LOG';
-$('log-status').dataset.state = 'off';
-
 function updateAim(f) {
   aim = Math.max(0, Math.min(1, f));
   aimAt(game, aim);
-  aimKnob.style.left = `${9 + aim * 82}%`;
+  aimKnob.style.left = `${40.5 + aim * Math.max(0, aimTrack.clientWidth - 81)}px`;
   aimTrack.setAttribute('aria-valuenow', String(Math.round(aim * 180)));
   aimTrack.setAttribute('aria-valuetext', aim < .35 ? 'Left' : aim > .65 ? 'Right' : 'Up');
 }
 function aimFromPointer(e) {
   const r = aimTrack.getBoundingClientRect();
-  updateAim((e.clientX - r.left - 27) / (r.width - 54));
+  updateAim((e.clientX - r.left - 40.5) / Math.max(1, r.width - 81));
 }
 function updateWing(next, timestamp) {
   next = Math.max(0, Math.min(1, next));
@@ -88,14 +107,14 @@ function updateWing(next, timestamp) {
   updateWing.lastTime = timestamp;
   wing = next;
   game.wing = wing;
-  flapKnob.style.top = `${21 + wing * (flapTrack.clientHeight - 42)}px`;
+  flapKnob.style.top = `${26 + wing * (flapTrack.clientHeight - 52)}px`;
   flapTrack.setAttribute('aria-valuenow', String(Math.round(wing * 100)));
   if (delta < 0) { upTravel += -delta; downTravel = 0; if (upTravel >= .24) armed = true; }
   if (delta > 0) {
     downTravel += delta; upTravel = 0;
     if (armed && downTravel >= .22) {
       armed = false;
-      const speed = Math.min(1600, delta * (flapTrack.clientHeight - 42) * 1000 / dt);
+      const speed = Math.min(1600, delta * (flapTrack.clientHeight - 52) * 1000 / dt);
       const kick = flap(game, speed);
       if (kick) {
         message.classList.add('dismissed');
@@ -106,42 +125,84 @@ function updateWing(next, timestamp) {
 }
 function wingFromPointer(e) {
   const r = flapTrack.getBoundingClientRect();
-  updateWing((e.clientY - r.top - 21) / (r.height - 42), e.timeStamp);
+  updateWing((e.clientY - r.top - 26) / Math.max(1, r.height - 52), e.timeStamp);
 }
+const releaseCaptures = [];
 function bindTrack(el, handler, onStart, onRelease) {
   let pointer = null;
+  const clear = () => {
+    if (pointer === null) return;
+    const held = pointer; pointer = null;
+    el.classList.remove('active'); onRelease?.();
+    if (el.hasPointerCapture(held)) el.releasePointerCapture(held);
+  };
+  releaseCaptures.push(clear);
   el.addEventListener('pointerdown', e => {
-    if (pointer !== null) return;
+    if (pointer !== null || suspended || pageInactive || document.hidden || game.mode === 'dead' || game.mode === 'won') return;
+    focusRecoveryUntil = 0;
     e.preventDefault(); pointer = e.pointerId;
     el.setPointerCapture(pointer); el.classList.add('active');
     onStart?.(e); handler(e);
   });
-  el.addEventListener('pointermove', e => { if (e.pointerId === pointer) { e.preventDefault(); handler(e); } });
+  el.addEventListener('pointermove', e => { if (e.pointerId === pointer && !suspended && !pageInactive && !document.hidden) { e.preventDefault(); handler(e); } });
   const release = e => { if (e.pointerId !== pointer) return; pointer = null; el.classList.remove('active'); onRelease?.(); };
   el.addEventListener('pointerup', release);
   el.addEventListener('pointercancel', release);
 }
 bindTrack(aimTrack, aimFromPointer, () => { aimHeld = true; }, () => { aimHeld = false; });
 bindTrack(flapTrack, wingFromPointer, () => { wingHeld = true; updateWing.lastTime = undefined; }, () => { wingHeld = false; });
-aimTrack.addEventListener('keydown', e => { if (['ArrowLeft', 'ArrowRight'].includes(e.key)) { e.preventDefault(); updateAim(aim + (e.key === 'ArrowLeft' ? -.05 : .05)); } });
-flapTrack.addEventListener('keydown', e => { if (['ArrowUp','ArrowDown'].includes(e.key)) { e.preventDefault(); updateWing(wing + (e.key === 'ArrowDown' ? .25 : -.25), performance.now()); } });
+aimTrack.addEventListener('keydown', e => { if (!suspended && !pageInactive && !document.hidden && ['ArrowLeft', 'ArrowRight'].includes(e.key)) { e.preventDefault(); updateAim(aim + (e.key === 'ArrowLeft' ? -.05 : .05)); } });
+flapTrack.addEventListener('keydown', e => { if (!suspended && !pageInactive && !document.hidden && ['ArrowUp','ArrowDown'].includes(e.key)) { e.preventDefault(); updateWing(wing + (e.key === 'ArrowDown' ? .25 : -.25), performance.now()); } });
 function reset() {
-  const restoreFocus = document.activeElement === $('retry');
+  saveBest();
   game = createGame(); camera = 0;
   particles.length = 0; flash = 0; shake = 0; impactHold = 0;
   pocketIndex = -1; cleared = new Set();
   wing = 0; armed = true; downTravel = 0; upTravel = 0; aimHeld = false; wingHeld = false;
   updateWing.lastTime = undefined;
-  flapKnob.style.top = '21px';
+  flapKnob.style.top = '26px';
   flapTrack.setAttribute('aria-valuenow', '0');
   updateAim(.5); death.hidden = true; delete death.dataset.outcome; message.classList.remove('dismissed');
+  document.querySelector('.topbar').inert = false;
+  document.querySelector('.controls').inert = false;
   stageIndex = -1; updateHud();
-  if (restoreFocus) aimTrack.focus({ preventScroll: true });
+  if (!pauseDialog.open) focusAfterTouch(aimTrack);
 }
-$('reset').addEventListener('click', reset);
 $('retry').addEventListener('click', reset);
+function suspend() {
+  suspended = true; last = 0;
+  releaseCaptures.forEach(clear => clear());
+  updateWing.lastTime = undefined;
+  saveBest();
+}
+function resume() { suspended = false; last = 0; updateWing.lastTime = undefined; }
+$('pause-button').addEventListener('click', () => {
+  if (pauseDialog.open || aboutDialog.open || !death.hidden) return;
+  focusBeforePause = document.activeElement;
+  suspend(); updateBest(); pauseDialog.showModal(); $('resume').focus({ preventScroll: true });
+});
+pauseDialog.addEventListener('cancel', e => { e.preventDefault(); pauseDialog.close(); });
+pauseDialog.addEventListener('close', () => {
+  resume();
+  const target = focusBeforePause === aimTrack || focusBeforePause === flapTrack ? focusBeforePause : aimTrack;
+  focusAfterTouch(target);
+});
+$('resume').addEventListener('click', () => pauseDialog.close());
+$('restart-run').addEventListener('click', () => { reset(); pauseDialog.close(); focusBeforePause = aimTrack; });
+$('logo-button').addEventListener('click', () => {
+  if (aboutDialog.open || pauseDialog.open) return;
+  aboutWasSuspended = suspended;
+  suspend(); aboutDialog.showModal(); $('close-about').focus({ preventScroll: true });
+});
+aboutDialog.addEventListener('cancel', e => { e.preventDefault(); aboutDialog.close(); });
+aboutDialog.addEventListener('close', () => {
+  if (!aboutWasSuspended) resume();
+  focusAfterTouch($('logo-button'));
+});
+$('close-about').addEventListener('click', () => aboutDialog.close());
 function updateHud() {
-  $('height').textContent = String(Math.floor(Math.max(0, game.maxY - 130))).padStart(3, '0');
+  updateBest();
+  $('height').textContent = String(currentAltitude()).padStart(3, '0');
   const next = GATES.findIndex(g => game.maxY < g.y + 50);
   const idx = next < 0 ? GATES.length - 1 : next;
   const atMachine = game.maxY >= GATES[5].y + 50 && game.maxY < MACHINE.y + 50;
@@ -158,9 +219,12 @@ function updateHud() {
     if (death.hidden) {
       death.dataset.outcome = game.mode;
       $('death-title').textContent = game.mode === 'won' ? 'YOU MADE IT.' : 'SCRAPPED.';
-      $('death-details').textContent = game.mode === 'won' ? 'Above the storm. Somehow.' : `Highest climb: ${Math.floor(Math.max(0, game.maxY - 130))} m`;
+      $('death-details').textContent = game.mode === 'won' ? 'Above the storm. Somehow.' : `Highest climb: ${currentAltitude()} m`;
+      saveBest();
       death.hidden = false;
-      $('retry').focus({ preventScroll: true });
+      document.querySelector('.topbar').inert = true;
+      document.querySelector('.controls').inert = true;
+      focusAfterTouch($('retry'));
     }
   }
 }
@@ -173,10 +237,13 @@ function resize() {
   ctx.setTransform(canvas.width / WORLD_WIDTH, 0, 0, canvas.width / WORLD_WIDTH, 0, 0);
   cacheBackdrop();
   if (game.mode === 'ready') camera = 0;
-  flapKnob.style.top = `${21 + wing * (flapTrack.clientHeight - 42)}px`;
+  flapKnob.style.top = `${26 + wing * (flapTrack.clientHeight - 52)}px`;
+  updateAim(aim);
 }
 window.addEventListener('resize', resize); resize(); updateAim(.5); updateHud();
-document.addEventListener('visibilitychange', () => { last = 0; });
+document.addEventListener('visibilitychange', () => { last = 0; if (document.hidden) { releaseCaptures.forEach(clear => clear()); saveBest(); } });
+window.addEventListener('pagehide', () => { pageInactive = true; last = 0; releaseCaptures.forEach(clear => clear()); saveBest(); });
+window.addEventListener('pageshow', () => { pageInactive = false; last = 0; });
 
 const sy = y => height - 75 - (y - camera);
 function line(x1,y1,x2,y2,color,width=1) { ctx.strokeStyle=color; ctx.lineWidth=width; ctx.beginPath(); ctx.moveTo(x1,y1); ctx.lineTo(x2,y2); ctx.stroke(); }
@@ -492,7 +559,8 @@ function draw(t) {
 }
 function frame(ms) {
   const dt=last?Math.min(.05,(ms-last)/1000):0;last=ms;
-  if(!document.hidden){
+  if(!document.hidden && !pageInactive && !suspended){
+    visualTime += dt;
     const returnStep = 1 - Math.exp(-18 * dt);
     if (!aimHeld && Math.abs(aim - .5) > .001) updateAim(Math.abs(aim - .5) < .008 ? .5 : aim + (.5 - aim) * returnStep);
     if (!wingHeld && wing > 0) {
@@ -518,10 +586,15 @@ function frame(ms) {
     camera += (Math.max(0,game.y-height*.54)-camera)*Math.min(1,dt*6);
     impactHold = Math.max(0, impactHold - dt);
     for(let i=particles.length-1;i>=0;i--){const p=particles[i];p.x+=p.vx*dt;p.y+=p.vy*dt;p.life-=dt;if(p.life<=0)particles.splice(i,1)}
-    updateHud();draw(ms/1000);
+    updateHud();draw(visualTime);
+    // Touch release can blur a newly shown/closed dialog after its click handler.
+    if (performance.now() < focusRecoveryUntil && document.activeElement === document.body &&
+        focusRecoveryTarget?.isConnected && !pauseDialog.open && !aboutDialog.open) {
+      focusRecoveryTarget.focus({ preventScroll: true });
+    }
   }
   requestAnimationFrame(frame);
 }
 requestAnimationFrame(frame);
 // Read-only state for browser acceptance; not used by the game loop.
-window.stormPrototype = { state: () => ({...game, aim, wing}) };
+window.stormPrototype = { state: () => ({...game, aim, wing, best, suspended, visualTime}) };
