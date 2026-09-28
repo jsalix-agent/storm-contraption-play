@@ -215,11 +215,11 @@ function updateHud() {
       $('stage').innerHTML = `${name} <span> / ${label}</span>`;
     }
   }
-  if ((game.mode === 'dead' && impactHold <= 0) || game.mode === 'won') {
+  if (game.mode === 'won') {
     if (death.hidden) {
-      death.dataset.outcome = game.mode;
-      $('death-title').textContent = game.mode === 'won' ? 'YOU MADE IT.' : 'SCRAPPED.';
-      $('death-details').textContent = game.mode === 'won' ? 'Above the storm. Somehow.' : `Highest climb: ${currentAltitude()} m`;
+      death.dataset.outcome = 'won';
+      $('death-title').textContent = 'YOU MADE IT.';
+      $('death-details').textContent = 'Above the storm. Somehow.';
       saveBest();
       death.hidden = false;
       document.querySelector('.topbar').inert = true;
@@ -587,6 +587,8 @@ function frame(ms) {
     impactHold = Math.max(0, impactHold - dt);
     for(let i=particles.length-1;i>=0;i--){const p=particles[i];p.x+=p.vx*dt;p.y+=p.vy*dt;p.life-=dt;if(p.life<=0)particles.splice(i,1)}
     updateHud();draw(visualTime);
+    // Show the crash beat before returning straight to the starting position.
+    if (game.mode === 'dead' && impactHold === 0) reset();
     // Touch release can blur a newly shown/closed dialog after its click handler.
     if (performance.now() < focusRecoveryUntil && document.activeElement === document.body &&
         focusRecoveryTarget?.isConnected && !pauseDialog.open && !aboutDialog.open) {
