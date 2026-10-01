@@ -1,61 +1,15 @@
 <!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1">
-  <meta name="theme-color" content="#111b29">
-  <title>Storm Contraption · alpha.1 prototype</title>
-  <link rel="icon" type="image/svg+xml" href="./favicon.svg?v=collage-full-v1">
-  <link rel="stylesheet" href="./style.css?v=collage-ui-v1">
-  <link rel="stylesheet" href="./pages.css?v=alpha1-v2">
-</head>
-<body>
-  <main class="machine" aria-label="Storm Contraption game">
-    <div class="topbar">
-      <button id="logo-button" class="brand" type="button" aria-label="About Storm Contraption"><span class="bolt">✳</span> STORM<br><strong>CONTRAPTION</strong></button>
-      <div class="flight-data"><span id="height">000</span><small>METRES UP</small></div>
-      <button id="pause-button" class="restart" type="button" aria-label="Pause game">Ⅱ</button>
-    </div>
-    <section class="scene" aria-label="Flying area">
-      <canvas id="world" aria-hidden="true"></canvas>
-      <div class="stage-tag" id="stage">THE UMBRELLA YARD <span> / 01</span></div>
-      <div class="message" id="message" aria-live="polite">
-        <div class="message-inner"><span class="eyebrow">FLIGHT TEST NO. 001</span><h1>BUILT TO<br>GO <em>UP.</em></h1>
-          <p>Aim with your left thumb.<br>Pull the right lever <b>down fast</b> to flap.<br>Release it to reload.</p>
-          <span class="begin">PULL DOWN TO LAUNCH ↓</span>
-        </div>
-      </div>
-      <div class="death" id="death" role="dialog" aria-labelledby="death-title" aria-describedby="death-details" hidden><div class="death-card"><span class="eyebrow">ABOVE THE STORM</span><h2 id="death-title">YOU MADE IT.</h2><p id="death-details">Above the storm. Somehow.</p><p id="death-best">BEST 0 m</p><button id="retry" type="button">FLY AGAIN <span>↗</span></button></div></div>
-    </section>
-    <div class="controls" aria-label="Flight controls">
-      <div class="aim-zone">
-        <div class="control-label">AIM</div>
-        <div id="aim-track" class="aim-track" role="slider" tabindex="0" aria-label="Aim direction" aria-valuemin="0" aria-valuemax="180" aria-valuenow="90" aria-valuetext="Up">
-          <div class="ticks"><i></i><i></i><i></i><i></i><i></i></div>
-          <div id="aim-knob" class="aim-knob"><span>✳</span></div>
-        </div>
-        <div class="ends"><span>LEFT</span><span>UP</span><span>RIGHT</span></div>
-      </div>
-      <div class="flap-zone">
-        <div class="control-label">FLAP</div>
-        <div id="flap-track" class="flap-track" role="slider" tabindex="0" aria-label="Wing position, drag down quickly to flap" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
-          <div class="flap-line"></div><div id="flap-knob" class="flap-knob"><span>↕</span></div>
-          <span class="flap-top">RESET</span><span class="flap-bottom">POWER</span>
-        </div>
-      </div>
-    </div>
-  </main>
-  <dialog id="pause-dialog" class="paper-dialog" aria-labelledby="pause-title" aria-describedby="pause-description">
-    <span class="eyebrow">FLIGHT TEST NO. 001</span><h2 id="pause-title">PAUSED.</h2>
-    <p id="pause-description">The storm is holding still.</p><p id="pause-best">BEST 0 m</p>
-    <div class="dialog-actions"><button id="resume" type="button">RESUME ↗</button><button id="restart-run" type="button">RESTART ↻</button></div>
-  </dialog>
-  <dialog id="about-dialog" class="paper-dialog" aria-labelledby="about-title" aria-describedby="about-description">
-    <span class="eyebrow">FLIGHT NOTES</span><h2 id="about-title">STORM CONTRAPTION</h2>
-    <p id="about-description">alpha.1 · prototype</p><p>Made by Josiah</p>
-    <p><a href="./credits.html" target="_blank" rel="noopener noreferrer">Photo credits and licenses ↗</a></p>
-    <div class="dialog-actions"><button id="close-about" type="button">CLOSE ×</button></div>
-  </dialog>
-  <script type="module" src="./src/main.mjs?v=alpha1-auto-restart-v1"></script>
-</body>
-</html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1"><meta name="theme-color" content="#111b29"><title>Storm Contraption · The Weatherworks Campaign</title>
+<link rel="icon" href="./favicon.svg"><link rel="stylesheet" href="./style.css?v=storm-campaign-public-20261001-v1"><link rel="stylesheet" href="./expedition.css?v=storm-campaign-public-20261001-v1"><link rel="stylesheet" href="./alpha3.css?v=storm-campaign-public-20261001-v1"><link rel="stylesheet" href="./alpha4.css?v=storm-campaign-public-20261001-v1"><link rel="stylesheet" href="./chapters.css?v=storm-campaign-public-20261001-v1"><link rel="stylesheet" href="./campaign.css?v=storm-campaign-public-20261001-v1"></head><body>
+<main class="machine lab campaign" data-mode="campaign" aria-label="Storm Contraption Campaign">
+<header class="topbar"><button id="map-button" class="brand" aria-label="Campaign map"><span class="bolt">✳</span> STORM<br><strong>CONTRAPTION</strong><small class="version">CAMPAIGN · MAP ↗</small></button><div class="flight-data"><span id="height">000</span><small id="height-label">METRES UP</small><small id="best">BEST —</small></div><button id="pause-button" class="restart" aria-label="Open game menu" aria-haspopup="dialog" aria-controls="pause-sheet" aria-expanded="false"><span class="pause-icon" aria-hidden="true"></span></button></header>
+<section class="scene" aria-label="Flying area"><canvas id="world" aria-hidden="true"></canvas><div class="stage-tag" id="stage"></div><div id="patent-count" class="patent-count" role="status" aria-live="polite">PATENT 0/1</div><div class="flight-notices"><div class="rest-hint" id="rest-hint" role="status">HOLD AIM · PULL FLAP TO FLY</div></div><div id="impact-notice" class="impact-notice" role="status" hidden><span id="impact-text"></span><button id="impact-retry">RETRY</button></div>
+<div class="sheet" id="pause-sheet" role="dialog" aria-modal="true" aria-labelledby="pause-title" hidden><div class="sheet-card"><span class="eyebrow">THE WEATHERWORKS · FIELD MENU</span><h2 id="pause-title">PAUSED.</h2><p id="pause-hint"></p><p id="save-warning" class="save-warning" role="status" hidden></p><button id="pause-resume">RESUME FLIGHT</button><button id="pause-restart">RESTART AT BASKET</button><button id="pause-new">NEW FULL FLIGHT</button><button id="pause-map">CAMPAIGN MAP ↗</button><div class="feedback-options"><label><input id="sound-toggle" type="checkbox" checked> SOUND</label><label><input id="haptic-toggle" type="checkbox"> HAPTICS (if supported)</label><small id="audio-status"></small></div><div id="menu-options"><details class="field-notes" id="menu-notebook"><summary>Patent notebook <span id="notebook-count">0/9</span></summary><ol id="notebook-list"></ol></details><details class="field-notes"><summary>How to fly · field notes</summary><p>Hold the left lever to aim. Pull the right lever down to flap, then release to reset. Aim changes your next impulse, not your existing drift: flap the other way to brake. Checked mint baskets are the current respawn well. Gold paper is optional, not a hazard.</p><p>Keyboard: ←/→ + Space; Escape pauses. An earned-basket resume still files the flight for campaign progress. Resumed or manually basket-restarted flights are practice-only for best times; start a new full flight for a best time. Sound wakes on the first gesture. Reduced motion follows your device setting.</p><a href="./credits.html" target="_blank" rel="noopener">Photo credits ↗</a></details><details id="campaign-restart" class="field-notes" hidden><summary>Start campaign over</summary><p>Clear campaign filing and the current flight? Your notebook, best times and preferences stay.</p><button id="campaign-new">YES · START A NEW CAMPAIGN</button></details><details id="storage-reset" hidden><summary>Reset unreadable campaign data</summary><p>This deletes only campaign progress, records and preferences. Lab and earlier game saves stay untouched.</p><button id="reset-lab">CONFIRM CAMPAIGN RESET</button></details><p class="local-note"><a href="./credits.html" target="_blank" rel="noopener noreferrer">Art credits ↗</a></p></div><p id="pause-privacy" class="local-note">Progress, patents and best times stay in this browser. No game analytics.</p></div></div>
+<div class="sheet" id="victory" role="region" aria-labelledby="victory-title" hidden><div class="sheet-card victory-card"><span class="eyebrow">AN INVENTION WORTH REPEATING</span><h2 id="victory-title">FLIGHT FILED.</h2><p id="report-level"></p><p id="report-scope" class="report-scope"></p><dl class="flight-report"><div><dt>FLIGHT TIME</dt><dd id="report-time"></dd></div><div><dt>PATENT</dt><dd id="report-patents"></dd></div><div><dt>CRASHES</dt><dd id="report-crashes"></dd></div><div><dt>BASKET RETRIES</dt><dd id="report-retries"></dd></div></dl><p id="report-best" class="report-best"></p><div class="flight-goals"><span id="goal-complete"></span><span id="goal-patents"></span><span id="goal-clean"></span></div><p id="campaign-ending" class="campaign-ending" hidden></p><button id="report-next" hidden>NEXT FLIGHT ↗</button><button id="report-map">CAMPAIGN MAP ↗</button><button id="report-replay">TRY THIS FLIGHT AGAIN</button></div></div>
+</section>
+<div class="controls" aria-label="Flight controls"><div class="aim-zone"><div class="control-label">AIM <small>HOLD TO STEER THRUST</small></div><div id="aim-track" class="aim-track" role="slider" tabindex="0" aria-label="Aim direction, hold while flapping" aria-valuemin="0" aria-valuemax="180" aria-valuenow="90" aria-valuetext="Up"><div class="ticks"><i></i><i></i><i></i><i></i><i></i></div><div id="aim-knob" class="aim-knob"><span>✳</span></div></div><div class="ends"><span>LEFT</span><span>UP</span><span>RIGHT</span></div></div><div class="flap-zone"><div class="control-label">FLAP</div><div id="flap-track" class="flap-track" role="slider" tabindex="0" aria-label="Wing lever, pull down to flap and release to reset" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="flap-line"></div><div id="flap-knob" class="flap-knob"><span>↕</span></div><span class="flap-top">RESET</span><span class="flap-bottom">POWER</span></div></div></div>
+<section id="workbench" class="workbench route-overview" aria-labelledby="map-title">
+<header class="map-header"><h1 id="map-title">The weatherworks.</h1><p id="campaign-summary" role="status">TRACE THE ROUTE · FILE THE NEXT FLIGHT</p></header>
+<div class="route-scroll"><nav id="route-board" aria-label="Nine-flight campaign route"></nav></div>
+<section id="flight-detail" class="flight-detail" aria-labelledby="detail-title"><div class="detail-body"><span id="detail-number" class="eyebrow"></span><h2 id="detail-title"></h2><p id="detail-premise"></p><div class="detail-record"><span id="detail-best"></span><span id="detail-patent"></span></div></div><figure id="detail-plan" aria-label="Compressed static flight plan, not to scale"></figure><div class="detail-actions"><button id="campaign-start">FLY THIS FLIGHT ↗</button><button id="continue-flight" hidden>VIEW FILED FLIGHT ↗</button></div><p id="storage-warning" role="status" hidden></p></section>
+</section></main><script type="module" src="./src/chapters-main.mjs?v=storm-campaign-public-20261001-v1"></script></body></html>

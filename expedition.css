@@ -1,0 +1,115 @@
+/* Menus sit above the physical course, never between stages. */
+.machine:has(.upgrade:not([hidden])) .scene{z-index:6}
+.upgrade{position:absolute;inset:0;z-index:6;background:#081522d9;display:flex;align-items:center;justify-content:center;padding:12px}
+.upgrade[hidden],.death[hidden]{display:none!important}
+#pause-actions[hidden],#restart-confirm[hidden],.rest-hint[hidden]{display:none!important}
+.upgrade-card{width:min(100%,340px);max-height:calc(100% - 16px);overflow-y:auto;overscroll-behavior:contain;touch-action:pan-y;padding:16px 17px;background:linear-gradient(155deg,#f5e9cd,#dfcba4 75%,#c5ae83);color:#253239;border:1px solid #f4deb4;border-left:4px solid #775638;box-shadow:5px 7px 0 #0b151cbc}
+.upgrade h2{font:bold 24px/1 Georgia,serif;letter-spacing:-.045em;margin:9px 0 7px}
+.upgrade p{font:12px/1.4 Arial,sans-serif;margin:0 0 10px}
+.upgrade button{cursor:pointer;touch-action:manipulation;width:100%;min-height:44px;padding:9px 12px;border:1px solid #654a35;color:#f5e5bf;background:#435c5b;font:800 11px/1.25 Arial,sans-serif;text-align:left;letter-spacing:.05em}
+.upgrade-card{width:min(100%,315px)}
+#upgrade-choices{display:grid;gap:8px}
+#upgrade-choices button strong,#upgrade-choices button small{display:block}
+#upgrade-choices button small{font:11px/1.35 Arial,sans-serif;color:#e6dfc8;margin-top:4px;letter-spacing:0}
+.upgrade button:focus-visible,.archive summary:focus-visible{outline:3px solid #314f5e;outline-offset:2px}
+.flight-notices{position:absolute;z-index:3;right:14px;bottom:calc(275px + env(safe-area-inset-bottom));
+  width:min(72%,240px);display:flex;flex-direction:column;align-items:flex-end;gap:9px;pointer-events:none}
+.flight-toast,.rest-hint{width:max-content;max-width:100%;overflow-wrap:anywhere;text-align:center;pointer-events:none}
+.flight-toast{padding:8px 11px;color:#173638;background:#e3edc9ed;border:1px solid #b7d6b4;
+  box-shadow:2px 4px 0 #09131b9c;font:800 15px/1.3 Arial,sans-serif;letter-spacing:.04em;
+  transform-origin:right bottom}
+.flight-toast.popping{animation:notice-pop .36s cubic-bezier(.2,.7,.25,1) both}
+@keyframes notice-pop{
+  from{opacity:0;transform:translate(18px,7px) scale(.84)}
+  68%{opacity:1;transform:translate(-3px,-2px) scale(1.04)}
+  to{opacity:1;transform:none}
+}
+.flight-toast[hidden]{display:none}
+.rest-hint{position:relative;padding:8px 10px;color:#f5edcf;background:#182c37ee;
+  border:1px solid #b5d8b8a3;font:800 13.5px/1.3 Arial,sans-serif;letter-spacing:.05em}
+.rest-hint::after{content:"";position:absolute;right:46px;top:100%;border:7px solid transparent;
+  border-top-color:#b5d8b8a3;border-bottom:0}
+.archive{border-block:1px solid #8a6e4f80;margin:10px 0 0;font:11px/1.42 Arial,sans-serif}
+.archive summary{min-height:44px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;font:800 10px Arial,sans-serif;letter-spacing:.06em;color:#314f52}
+.archive summary span{color:#855b40}
+.archive>div{padding:0 2px 11px;color:#344248}
+.archive p{margin:8px 0}
+.death{bottom:calc(265px + env(safe-area-inset-bottom))}
+.death-card,.death[data-outcome="won"] .death-card{margin-top:0;max-height:calc(100% - 12px);overflow-y:auto}
+.death[data-outcome="won"] .death-card:after{background:radial-gradient(circle at 35% 30%,#cef2dd,#477b72 58%,#263b3c)}
+.death button:focus-visible{outline:3px solid #f3d599;outline-offset:2px}
+/* Larger mechanical levers. Keep their physical travel aligned with the JS geometry. */
+.controls{height:calc(265px + env(safe-area-inset-bottom))}
+.aim-track{height:99px}
+.aim-knob{width:81px;height:81px;font-size:31px}
+.flap-track{height:213px}
+.flap-knob{height:48px;top:25px}
+.machine.awaiting-flap .flap-knob{animation:flap-ready-glow 1.35s ease-in-out infinite}
+@keyframes flap-ready-glow{
+  0%,100%{box-shadow:0 0 0 1px #b9e9b754,0 0 9px 3px #c8f6b477,inset 0 0 0 2px #6a4e37}
+  50%{box-shadow:0 0 0 4px #b9e9b7b5,0 0 22px 9px #c8f6b4c7,inset 0 0 0 2px #6a4e37}
+}
+@media(prefers-reduced-motion:reduce){.machine.awaiting-flap .flap-knob{animation:none;box-shadow:0 0 0 3px #b9e9b7a8,0 0 14px 5px #c8f6b4a8}.flight-toast.popping{animation:none}}
+.flap-top,.flap-bottom{right:0}
+.flap-top{top:54px}.flap-bottom{bottom:54px}
+.brand{background:none;border:0;padding:0;text-align:left;cursor:pointer;min-height:44px;flex:none;-webkit-tap-highlight-color:transparent}
+.restart{-webkit-tap-highlight-color:transparent}
+.brand:focus-visible{outline:2px solid #f6d69d;outline-offset:3px}
+.flight-data #best{font-size:9px;letter-spacing:.09em;color:#e0c28e}
+.pause-icon{display:block;width:19px;height:22px;margin:auto;background:linear-gradient(90deg,#f2dbad 0 6px,transparent 6px 12px,#f2dbad 12px 18px);filter:drop-shadow(0 1px 2px #07131a)}
+.restart:disabled{opacity:.48;cursor:default}
+.sheet[hidden]{display:none!important}
+.machine.has-sheet .scene{z-index:6}
+.sheet{position:absolute;inset:0;z-index:8;display:flex;align-items:center;justify-content:center;background:#081621d9;padding:17px}
+.sheet-card{position:relative;isolation:isolate;width:min(100%,325px);max-height:calc(100% - 25px);overflow-y:auto;padding:24px 19px 20px;
+  color:#25323a;background:repeating-linear-gradient(0deg,#6b513509 0 1px,transparent 1px 4px),linear-gradient(155deg,#f5e9cd,#dfcba4 75%,#c5ae83);
+  border:1px solid #f8e4b9;box-shadow:5px 7px 0 #182b32b9,10px 13px 20px #06111ac9;
+  clip-path:polygon(0 0,100% 0,100% 97%,95% 100%,87% 98%,79% 100%,70% 98%,61% 100%,51% 98%,42% 100%,32% 98%,23% 100%,13% 98%,0 100%)}
+.sheet-card h2{font:bold 31px/.96 Georgia,serif;letter-spacing:-.04em;color:#253b3f;margin:13px 0 10px}
+.sheet-card p{font:13px/1.45 Arial,sans-serif;color:#384647;margin:0 0 18px}
+.sheet-card button,.sheet-card a{display:block;width:100%;min-height:46px;margin:8px 0;padding:11px 12px;text-align:left;
+  border:1px solid #654a35;color:#f5e5bf;background:linear-gradient(115deg,#785037,#36353a);
+  font:800 11px/1.3 Arial,sans-serif;letter-spacing:.07em;text-decoration:none;cursor:pointer}
+.sheet-card a{background:linear-gradient(115deg,#396866,#2c4f55);border-color:#365e5d}
+.sheet-card button:focus-visible,.sheet-card a:focus-visible{outline:3px solid #305c61;outline-offset:2px}
+.sheet-card button:active,.sheet-card a:active{filter:brightness(1.2)}
+.sheet-card button:disabled{opacity:.45;cursor:not-allowed}
+.sheet-card .seed-readout{margin:-7px 0 8px;font:800 10px/1.4 Arial,sans-serif;letter-spacing:.08em;color:#40605b;overflow-wrap:anywhere}
+.sheet-card .seed-context:not(:empty){margin:0 0 9px;padding:7px;border-left:3px solid #a36b49;background:#fff4d480;font-size:11px}
+.seed-label{display:block;margin:4px 0 5px;font:800 10px Arial,sans-serif;letter-spacing:.09em;color:#314f52}
+#run-seed{display:block;width:100%;min-height:44px;padding:9px 10px;border:1px solid #806848;background:#fff9e8;color:#253239;font:14px Arial,sans-serif}
+#run-seed:focus-visible{outline:3px solid #305c61;outline-offset:2px}
+#pause-restart-all{color:#4a3930;background:#dec8a5;border-color:#927250}
+#restart-confirm p{margin:5px 0 12px}
+#restart-confirm-go{background:linear-gradient(115deg,#974b39,#623128)}
+.run-log{border-top:1px solid #8a6e4f80;margin-top:12px;padding-top:10px;font:11px/1.4 Arial,sans-serif;color:#384647}
+.run-log label{display:flex;align-items:center;gap:9px;min-height:44px;font-weight:800;letter-spacing:.04em;cursor:pointer}
+.run-log input{width:20px;height:20px;flex:none;accent-color:#305c61}
+.run-log input:focus-visible{outline:3px solid #305c61;outline-offset:3px}
+.sheet-card .run-log p{font:11px/1.4 Arial,sans-serif;margin:2px 0 8px}
+.sheet-card #run-log-status{font-weight:800;margin:0;color:#45635b}
+.sheet-card #run-log-status[data-state="off"]{color:#81503f}
+#about-sheet .sheet-card{width:min(100%,285px);padding:19px 17px 15px}
+#about-sheet .sheet-card h2{font-size:27px;margin:10px 0}
+#about-sheet .sheet-card p{margin-bottom:12px}
+#about-sheet .sheet-card a,#about-sheet .sheet-card button{min-height:44px;padding:9px 10px;margin:6px 0;font-size:10px}
+@media(max-height:590px){
+  .upgrade-card{padding:11px 13px;max-height:calc(100% - 8px)}
+  .upgrade h2{font-size:21px;margin:5px 0}
+  .upgrade p{font-size:11px;line-height:1.3}
+  .death[data-outcome="won"] .death-card{padding:14px 18px 13px}
+  .death[data-outcome="won"] h2{font-size:29px;margin:8px 0 4px}
+  .death[data-outcome="won"] p{font-size:11px;line-height:1.3;margin-bottom:8px;padding-bottom:6px}
+  .death[data-outcome="won"] button{font-size:10px;min-height:44px;padding:9px 11px}
+}
+@media(max-width:350px){
+  .rest-hint::after{right:34px}
+  .stage-tag{max-width:54%;font-size:8px;white-space:nowrap;padding:6px}
+  .upgrade-card{padding:10px}
+  .aim-knob{width:66px;height:66px}
+  .flap-zone{min-width:75px}
+}
+
+/* Keep stage names as quiet orientation markers, not route instructions. */
+.stage-tag{opacity:.78;font-size:9px;letter-spacing:.08em;padding:5px 7px;max-width:55%}
+@media(max-width:350px){.stage-tag{font-size:8px;max-width:57%}}

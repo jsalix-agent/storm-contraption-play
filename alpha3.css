@@ -1,0 +1,23 @@
+.version{display:block;margin:5px 0 0 35px;font:700 8px/1 Arial,sans-serif;letter-spacing:.14em;color:#b9cbbd}
+.control-label small{display:block;font:700 7.5px/1.3 Arial,sans-serif;letter-spacing:.07em;margin-top:4px;color:#c5d3cb}
+.aim-zone .control-label{min-height:25px}
+.impact-notice{position:absolute;z-index:4;left:15px;right:15px;top:48px;width:max-content;max-width:calc(100% - 30px);padding:7px 10px;border-left:3px solid #f2a17e;background:#12212beb;color:#ffe4c3;font:800 10px/1.4 Arial,sans-serif;letter-spacing:.04em;pointer-events:none}
+.impact-notice[hidden],.save-warning[hidden],#victory[hidden]{display:none!important}
+.impact-notice{display:flex;align-items:center;gap:8px;padding-block:0}
+.impact-notice span{max-width:230px}
+.impact-notice button{pointer-events:auto;min-width:52px;min-height:44px;border:0;border-left:1px solid #cda37566;background:transparent;color:#ffe4c3;font:800 10px Arial,sans-serif;cursor:pointer}
+.feedback-options{display:grid;gap:0;border-top:1px solid #9a825b80;padding-top:5px;margin-top:9px;font:800 10px/1.4 Arial,sans-serif;color:#344d50;letter-spacing:.05em}
+.feedback-options label{display:flex;align-items:center;gap:9px;min-height:44px;cursor:pointer}
+.feedback-options input{width:20px;height:20px;accent-color:#305c61;flex:none}
+.feedback-options small{font:11px/1.4 Arial,sans-serif;letter-spacing:0;color:#4c625d;margin:1px 0 6px}
+.save-warning{padding:8px;border-left:3px solid #a76142;background:#f5d9a8a0!important;font-size:11px!important}
+.sheet-card{touch-action:pan-y;overscroll-behavior:contain}
+.victory-card{background:repeating-linear-gradient(0deg,#57634109 0 1px,transparent 1px 4px),linear-gradient(155deg,#f3eed9,#d6dfbf 75%,#b7c9ad)}
+.victory-card h2{font-size:36px;color:#315b56}
+#victory-inspect{background:#d3d6b7;color:#3d5653;border-color:#7d9683}
+.controls{padding-top:25px}
+.flight-notices{max-width:78%;bottom:calc(240px + env(safe-area-inset-bottom))}
+.rest-hint{font-size:12px;max-width:100%}
+.keyboard-note{font-size:11px!important}
+@media(max-width:350px){.control-label small{font-size:6.5px;letter-spacing:0}.flight-notices{right:9px;max-width:82%}.rest-hint{font-size:10px}.version{margin-left:33px}.stage-tag{font-size:8px}.impact-notice{font-size:9px;left:10px;right:10px}.victory-card h2{font-size:31px}}
+@media(max-height:720px){.sheet-card{padding:18px 16px 14px;max-height:calc(100% - 20px)}.sheet-card h2{font-size:27px;margin-block:9px}.sheet-card p{font-size:12px;margin-bottom:10px}.sheet-card button{min-height:44px;margin-block:5px;padding:9px 11px}.feedback-options{margin-top:6px}.run-log{margin-top:7px;padding-top:5px}.run-log p{font-size:10px!important}.victory-card h2{font-size:31px}}

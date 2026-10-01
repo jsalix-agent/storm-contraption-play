@@ -1,0 +1,8 @@
+# Photo sources for Storm Contraption's collage artwork
+
+The full-course artwork uses cropped, tinted derivatives of these **real photographs**. The photographed objects and their source images remain credited here even though attribution is not required for the stated licenses.
+
+- **Fairmount Waterworks turbine gears** — Jack E. Boucher, Historic American Engineering Record / Library of Congress. Public domain (U.S. federal government archival photograph). [Wikimedia Commons file](https://commons.wikimedia.org/wiki/File:DETAIL_OF_TURBINE_GEARS_(4%27_x_5%27_negative)_-_Fairmount_Waterworks,_East_bank_of_Schuylkill_River,_Aquarium_Drive,_Philadelphia,_Philadelphia_County,_PA_HAER_PA,51-PHILA,328-80.tif). `sources/fairmount-gears.jpg` is a Wikimedia thumbnail of the archival TIFF.
+- **Radio Transmitter Model TBL-13, U.S. Navy / Westinghouse** — Daderot, National Electronics Museum. CC0. [Wikimedia Commons file](https://commons.wikimedia.org/wiki/File:Radio_Transmitter_Model_TBL-13,_US_Navy,_Westinghouse_-_National_Electronics_Museum_-_DSC00251.JPG). `sources/westinghouse-transmitter.jpg` is a Wikimedia thumbnail of the uploaded photograph.
+
+Both source file pages were checked via the Wikimedia Commons imageinfo API for their stated licenses before including derivatives. `scripts/build_preview_art.py` regenerates all three scenery chapters, the photo cards, and gate strips from these two source photographs with Pillow; `scripts/build_detail_art.py` regenerates the wall lining, wind ribbon and arrow, goal iris, and moving-bank mast cutout from the same credited photos. `scripts/build_craft.py` produces the player sprites. No runtime image generation or external requests are needed.
